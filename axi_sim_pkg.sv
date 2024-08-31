@@ -283,7 +283,7 @@ package axi_sim_pkg;
         // "logical" idea, instead of inheritance: Can't you just parameterize 
         // the interface with the AXI version?
 
-        virtual ifc_axi4 #(
+        virtual ifc_axi4_sim #(
                 .ADDR_WIDTH (ADDR_WIDTH),
                 .DATA_WIDTH (DATA_WIDTH),
                 .ID_WIDTH   (ID_WIDTH),
@@ -299,7 +299,7 @@ package axi_sim_pkg;
         //----------------------------
 
         function new(
-            virtual ifc_axi4 #(
+            virtual ifc_axi4_sim #(
                     .ADDR_WIDTH (ADDR_WIDTH),
                     .DATA_WIDTH (DATA_WIDTH),
                     .ID_WIDTH   (ID_WIDTH),

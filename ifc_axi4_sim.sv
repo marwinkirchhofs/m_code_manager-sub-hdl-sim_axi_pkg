@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-interface ifc_axi4 #(
+interface ifc_axi4_sim #(
     parameter int ADDR_WIDTH = 32,
     parameter int DATA_WIDTH = 32,
     parameter int ID_WIDTH = 0,
