@@ -5,6 +5,7 @@ package axi_sim_pkg;
     import util_pkg::print_test_start;
     import util_pkg::print_test_result;
     import util_pkg::print_tests_stats;
+    import util_pkg::cls_test_data;
 
     /*
     * performance statistics for one AXI transaction - can be read-only, 
@@ -86,94 +87,6 @@ package axi_sim_pkg;
         endfunction // print_long
 
     endclass // axi_transaction_stats
-
-    /*
-    * pseudo constrained randomization class for test data - all the freely 
-    * available tools don't support actual constrained randomization. This class 
-* still provides a way of getting a randomized dynamic 2-dimensional regular 
-* arary with the individual vectors of the array all randomized.
-    * Zero-initialization is possible as well, for data type consistency between 
-    * different test data objects (for example when one is for writing and the 
-* other is read-back, to be compared afterwards)
-    */
-    class cls_test_data;
-
-        logic data [][];
-
-        function new (input int num_words, input int bitwidth,
-            input bit randomize_data=0);
-            data = new[num_words];
-            foreach (data[i]) data[i] = new[bitwidth];
-            initialize(randomize_data);
-        endfunction // new
-
-        function void initialize(input bit randomize_data=0);
-            if (randomize_data) begin
-                this.randomize_data();
-            end else begin
-                this.set_zero();
-            end
-        endfunction // new
-
-        function void randomize_data();
-            foreach (data[i,j]) data[i][j] = $random;
-        endfunction // randomize_data
-
-        function void set_zero();
-            foreach (data[i,j]) data[i][j] = 0;
-        endfunction // set_zero
-
-        /*
-        * number of data words
-        */
-        function int get_len();
-            return $size(data);
-        endfunction // get_len
-
-        /*
-        * bitwidth of data words
-        */
-        function int get_size();
-            return $size(data[0]);
-        endfunction // get_size
-
-        /*
-        * test for equality with another cls_test_data object
-        */
-        function bit equals (cls_test_data data_compare);
-            return data == data_compare.data;
-        endfunction // equals
-
-
-        /*
-        * print the generated data in a 64-bit casted hex format
-        * (obviously will fail in some way if the data words are wider than 64 
-        * bits, but it does the job for quick debugging)
-        */
-        function void print64();
-            bit [63:0] data_packed;
-            for (int i=0; i<$size(data); i++) begin
-                data_packed = {>>64{data[i]}};
-                data_packed = {<<{data_packed}};
-                $display("data item %0d: %h", i, data_packed);
-            end
-        endfunction // print64
-
-        /*
-        * print the generated data in a 256-bit casted hex format
-        * (obviously will fail in some way if the data words are wider than 64 
-        * bits, but it does the job for quick debugging)
-        */
-        function void print256();
-            bit [255:0] data_packed;
-            for (int i=0; i<$size(data); i++) begin
-                data_packed = {>>256{data[i]}};
-                data_packed = {<<{data_packed}};
-                $display("data item %0d: %h", i, data_packed);
-            end
-        endfunction // print256
-
-    endclass // cls_test_data
 
     /*
     * changes AXI3 -> AXI4
